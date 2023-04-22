@@ -47,7 +47,17 @@ let time = Date.now();
 let final2;
 
 myimage.onclick = function(e) {
-    // ...
+
+    var ratioX = e.target.naturalWidth / e.target.offsetWidth;
+        var ratioY = e.target.naturalHeight / e.target.offsetHeight;
+      
+        var domX = e.x + window.pageXOffset - e.target.offsetLeft;
+        var domY = e.y + window.pageYOffset - e.target.offsetTop;
+      
+        var x = Math.floor(domX * ratioX);
+        var y = Math.floor(domY * ratioY);
+
+
     if (x > 1194 && x < 1236 && y > 1199 && y < 1311) {
         let time2 = Date.now();
         let final = time2 - time;
