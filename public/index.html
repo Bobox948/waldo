@@ -61,7 +61,7 @@ myimage.onclick = function(e) { // to retrieve the image pixels on click (x, y c
         let time2 = Date.now();
         let final = time2 - time; // to have the time in seconds since the oppening of the page until the winning
         final2 = (final/1000).toFixed(0); 
-        alert(`gg, done in ${final2} seconds`);
+        alert(`Congratz, you found him in ${final2} seconds`);
         document.getElementById("score-form").style.display = "block";
 
     }
@@ -70,7 +70,7 @@ myimage.onclick = function(e) { // to retrieve the image pixels on click (x, y c
 
 };
 
-async function saveScore(name, score) { // function to save score to db
+async function saveScore(name, score) { // function to save score in the db
   try {
     await addDoc(collection(db, "scores"), {
       name: name,
@@ -81,7 +81,7 @@ async function saveScore(name, score) { // function to save score to db
   }
 }
 
-document.getElementById("score-form").addEventListener("submit", async (e) => { // displays the input form to save score with your username
+document.getElementById("score-form").addEventListener("submit", async (e) => { // displays the input form to save the score with your name in the db
   e.preventDefault();
   const playerName = document.getElementById("player-name").value;
   await saveScore(playerName, final2);
