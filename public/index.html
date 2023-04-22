@@ -6,73 +6,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-
 </head>
 <body>
 
 <div id="time">Time : </div>
 <img  id="myimage" src="waldo1.jpeg" height="1250px" width="2000px"/>
+
+<form id="score-form" style="display:none;">
+  <label for="player-name">Prénom:</label>
+  <input type="text" id="player-name" required>
+  <button type="submit">Enregistrer le score</button>
+</form>
+
+<div id="leaderboard" style="display:none;">
+  <h2>Classement</h2>
+  <ol id="leaderboard-list"></ol>
+</div>
     
-<button id="show-scores">Afficher les scores</button>
-
-<ul id="score-list"></ul>
-
 </body>
 <script type="module">
 
-import { initializeApp } from "firebase/app";
-import { getFirestore, addDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
+import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDjPAyUmMGosOlTzEz0whdl8lvHlCk4Stw",
+  authDomain: "waldo-f0134.firebaseapp.com",
+  projectId: "waldo-f0134",
+  storageBucket: "waldo-f0134.appspot.com",
+  messagingSenderId: "630658148560",
+  appId: "1:630658148560:web:be90b4692bbceb3db1d6d5"
+};
 
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyDjPAyUmMGosOlTzEz0whdl8lvHlCk4Stw",
-    authDomain: "waldo-f0134.firebaseapp.com",
-    projectId: "waldo-f0134",
-    storageBucket: "waldo-f0134.appspot.com",
-    messagingSenderId: "630658148560",
-    appId: "1:630658148560:web:be90b4692bbceb3db1d6d5"
-  };
+let time = Date.now();
+let final2;
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
+myimage.onclick = function(e) {
+    // ...
+    if (x > 1194 && x < 1236 && y > 1199 && y < 1311) {
+        let time2 = Date.now();
+        let final = time2 - time;
+        final2 = (final/1000).toFixed(0);
+        alert(`gg, done in ${final2} seconds`);
+        document.getElementById("score-form").style.display = "block";
+    }
+};
 
+async function saveScore(name, score) {
+  try {
+    await addDoc(collection(db, "scores"), {
+      name: name,
+      score: parseInt(score)
+    });
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
 
-    
+document.getElementById("score-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const playerName = document.getElementById("player-name").value;
+  await saveScore(playerName, final2);
+  document.getElementById("score-form").style.display = "none";
+  document.getElementById("player-name").value = "";
+  displayLeaderboard();
+});
 
- let time = Date.now()
+async function displayLeaderboard() {
+  const leaderboardList = document.getElementById("leaderboard-list");
+  leaderboardList.innerHTML = "";
 
-    myimage.onclick = function(e) {
-        var ratioX = e.target.naturalWidth / e.target.offsetWidth;
-        var ratioY = e.target.naturalHeight / e.target.offsetHeight;
-      
-        var domX = e.x + window.pageXOffset - e.target.offsetLeft;
-        var domY = e.y + window.pageYOffset - e.target.offsetTop;
-      
-        var x = Math.floor(domX * ratioX);
-        var y = Math.floor(domY * ratioY);
+  const q = query(collection(db, "scores"), orderBy("score", "asc"), limit(10));
+  const querySnapshot = await getDocs(q);
 
+  querySnapshot.forEach((doc) => {
+    const scoreData = doc.data();
+    const listItem = document.createElement("li");
+    listItem.textContent = `${scoreData.name}: ${scoreData.score} secondes`;
+    leaderboardList.appendChild(listItem);
+  });
 
-        if (x > 1194 && x < 1236 && y > 1199 && y < 1311)
+  document.getElementById("leaderboard").style.display = "block";
+}
 
-        {
-            let time2 = Date.now()
-
-            let final = time2 - time
-
-            let final2 = (final/1000).toFixed(0)
-
-            alert(`gg, done in ${final2} seconds`)
-        
-        }
-      
-      };
 
 let timer = document.querySelector('#time')
 
@@ -84,42 +105,6 @@ setInterval(() => {
 }, 1000);
 
 
-async function saveScore(name, time) {
-  try {
-    const docRef = await addDoc(collection(db, "scores"), {
-      name: name,
-      time: time,
-      timestamp: Date.now(),
-    });
-    console.log("Score enregistré avec l'ID: ", docRef.id);
-  } catch (e) {
-    console.error("Erreur lors de l'enregistrement du score: ", e);
-  }
-}
-
-
-saveScore(user_name, time_taken);
-
-
-async function displayTopScores() {
-  const scoresRef = collection(db, "scores");
-  const q = query(scoresRef, orderBy("time", "asc"), limit(10));
-
-  const querySnapshot = await getDocs(q);
-  const scoreListElement = document.getElementById("score-list");
-  scoreListElement.innerHTML = ""; // Vide la liste avant de la remplir
-
-  let rank = 1;
-  querySnapshot.forEach((doc) => {
-    const listItem = document.createElement("li");
-    listItem.textContent = `${rank}. ${doc.data().name} - ${doc.data().time}`;
-    scoreListElement.appendChild(listItem);
-    rank++;
-  });
-}
-
-const showScoresButton = document.getElementById("show-scores");
-showScoresButton.addEventListener("click", displayTopScores);
       
 </script>
 
