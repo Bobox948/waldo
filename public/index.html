@@ -10,18 +10,19 @@
 <body>
 
 <div id="time">Time : </div>
+<form id="score-form" style="display:none;">
+    <label for="player-name">Prénom:</label>
+    <input type="text" id="player-name" required>
+    <button type="submit">Enregistrer le score</button>
+  </form>
+  
+  <div id="leaderboard" style="display:none;">
+    <h2>Classement</h2>
+    <ol id="leaderboard-list"></ol>
+  </div>
 <img  id="myimage" src="waldo1.jpeg" height="1250px" width="2000px"/>
 
-<form id="score-form" style="display:none;">
-  <label for="player-name">Prénom:</label>
-  <input type="text" id="player-name" required>
-  <button type="submit">Enregistrer le score</button>
-</form>
 
-<div id="leaderboard" style="display:none;">
-  <h2>Classement</h2>
-  <ol id="leaderboard-list"></ol>
-</div>
     
 </body>
 <script type="module">
