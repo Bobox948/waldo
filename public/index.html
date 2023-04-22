@@ -23,7 +23,7 @@
 <script type="module">
 
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, collection, addDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 
 
 const db = getFirestore(app);
@@ -83,7 +83,6 @@ setInterval(() => {
     timer.innerHTML = `Time : ${i}`;
 }, 1000);
 
-import { collection, addDoc } from "firebase/firestore";
 
 async function saveScore(name, time) {
   try {
@@ -100,7 +99,6 @@ async function saveScore(name, time) {
 
 
 saveScore(user_name, time_taken);
-import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 
 
 async function displayTopScores() {
