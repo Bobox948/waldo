@@ -1,23 +1,24 @@
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBX8PICPbVGlRytkpwFvr05Elq1roUfSpQ",
-  authDomain: "waldo-7efa9.firebaseapp.com",
-  projectId: "waldo-7efa9",
-  storageBucket: "waldo-7efa9.appspot.com",
-  messagingSenderId: "990795196497",
-  appId: "1:990795196497:web:b3559029c2f10873aeb070"
-};
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDjPAyUmMGosOlTzEz0whdl8lvHlCk4Stw",
+    authDomain: "waldo-f0134.firebaseapp.com",
+    projectId: "waldo-f0134",
+    storageBucket: "waldo-f0134.appspot.com",
+    messagingSenderId: "630658148560",
+    appId: "1:630658148560:web:be90b4692bbceb3db1d6d5"
+  };
 
-
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  
 document.addEventListener('DOMContentLoaded', function() { // making sure the doam is loaded first, after that we can locate elements by ID easily
 
+    
 
  let time = Date.now()
 
