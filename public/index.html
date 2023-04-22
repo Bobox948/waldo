@@ -5,22 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<div id="time">Time : </div>
+<h2>Where's Waldo ?</h2>
 <form id="score-form" style="display:none;">
-    <label for="player-name">Prénom:</label>
+    <label for="player-name">Name :</label>
     <input type="text" id="player-name" required>
-    <button type="submit">Enregistrer le score</button>
+    <button type="submit">Save score</button>
   </form>
   
   <div id="leaderboard" style="display:none;">
-    <h2>Classement</h2>
+    <h2>Top10</h2>
     <ol id="leaderboard-list"></ol>
   </div>
-<img  id="myimage" src="waldo1.jpeg" height="1250px" width="2000px"/>
+<img  id="myimage" src="waldo1.jpeg" height="1000px" width="1750px"/>
 
 
     
@@ -44,10 +42,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-let time = Date.now();
+let time = Date.now(); // to have the time in seconds since the oppening of the page until the winning
 let final2;
 
-myimage.onclick = function(e) {
+myimage.onclick = function(e) { // to retrieve the image pixels on click (x, y coordinnates)
 
     var ratioX = e.target.naturalWidth / e.target.offsetWidth;
         var ratioY = e.target.naturalHeight / e.target.offsetHeight;
@@ -56,16 +54,15 @@ myimage.onclick = function(e) {
         var domY = e.y + window.pageYOffset - e.target.offsetTop;
       
         var x = Math.floor(domX * ratioX);
-        var y = Math.floor(domY * ratioY);
+        var y = Math.floor(domY * ratioY); 
 
 
-    if (x > 1194 && x < 1236 && y > 1199 && y < 1311) {
+    if (x > 1194 && x < 1236 && y > 1199 && y < 1311) { // this is the location of waldo, so if the click is here, you won
         let time2 = Date.now();
-        let final = time2 - time;
-        final2 = (final/1000).toFixed(0);
+        let final = time2 - time; // to have the time in seconds since the oppening of the page until the winning
+        final2 = (final/1000).toFixed(0); 
         alert(`gg, done in ${final2} seconds`);
         document.getElementById("score-form").style.display = "block";
-        document.querySelector('#time').style.display="none"
 
     }
 
@@ -73,7 +70,7 @@ myimage.onclick = function(e) {
 
 };
 
-async function saveScore(name, score) {
+async function saveScore(name, score) { // function to save score to db
   try {
     await addDoc(collection(db, "scores"), {
       name: name,
@@ -84,16 +81,16 @@ async function saveScore(name, score) {
   }
 }
 
-document.getElementById("score-form").addEventListener("submit", async (e) => {
+document.getElementById("score-form").addEventListener("submit", async (e) => { // displays the input form to save score with your username
   e.preventDefault();
   const playerName = document.getElementById("player-name").value;
   await saveScore(playerName, final2);
   document.getElementById("score-form").style.display = "none";
   document.getElementById("player-name").value = "";
-  displayLeaderboard();
+  displayLeaderboard();  
 });
 
-async function displayLeaderboard() {
+async function displayLeaderboard() { // displays the ranking
   const leaderboardList = document.getElementById("leaderboard-list");
   leaderboardList.innerHTML = "";
 
@@ -103,7 +100,7 @@ async function displayLeaderboard() {
   querySnapshot.forEach((doc) => {
     const scoreData = doc.data();
     const listItem = document.createElement("li");
-    listItem.textContent = `${scoreData.name}: ${scoreData.score} secondes`;
+    listItem.textContent = `${scoreData.name} : ${scoreData.score} seconds`;
     leaderboardList.appendChild(listItem);
   });
 
@@ -111,14 +108,6 @@ async function displayLeaderboard() {
 }
 
 
-let timer = document.querySelector('#time')
-
-var i = 0;
-
-setInterval(() => {
-    i = i + 1;
-    timer.innerHTML = `Time : ${i}`;
-}, 1000);
 
 
       
