@@ -6,17 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+
 </head>
 <body>
 
 <div id="time">Time : </div>
 <img  id="myimage" src="waldo1.jpeg" height="1250px" width="2000px"/>
     
+<button id="show-scores">Afficher les scores</button>
+
+<ul id="score-list"></ul>
+
 </body>
 <script type="module">
 
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
+
+const db = getFirestore(app);
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -73,7 +83,45 @@ setInterval(() => {
     timer.innerHTML = `Time : ${i}`;
 }, 1000);
 
+import { collection, addDoc } from "firebase/firestore";
 
+async function saveScore(name, time) {
+  try {
+    const docRef = await addDoc(collection(db, "scores"), {
+      name: name,
+      time: time,
+      timestamp: Date.now(),
+    });
+    console.log("Score enregistré avec l'ID: ", docRef.id);
+  } catch (e) {
+    console.error("Erreur lors de l'enregistrement du score: ", e);
+  }
+}
+
+
+saveScore(user_name, time_taken);
+import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+
+
+async function displayTopScores() {
+  const scoresRef = collection(db, "scores");
+  const q = query(scoresRef, orderBy("time", "asc"), limit(10));
+
+  const querySnapshot = await getDocs(q);
+  const scoreListElement = document.getElementById("score-list");
+  scoreListElement.innerHTML = ""; // Vide la liste avant de la remplir
+
+  let rank = 1;
+  querySnapshot.forEach((doc) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = `${rank}. ${doc.data().name} - ${doc.data().time}`;
+    scoreListElement.appendChild(listItem);
+    rank++;
+  });
+}
+
+const showScoresButton = document.getElementById("show-scores");
+showScoresButton.addEventListener("click", displayTopScores);
       
 </script>
 
